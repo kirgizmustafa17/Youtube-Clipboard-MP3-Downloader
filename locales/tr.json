@@ -1,0 +1,23 @@
+{
+  "MissingFilesTitle": "Eksik Dosyalar",
+  "MissingFilesMsg": "Lütfen 'YT Audio Catcher Güncelle' kısayoluna tıklayarak ilk kurulumu tamamlayın.",
+  "AppRunningTitle": "YT Audio Catcher",
+  "AppRunningMsg": "Uygulama arka planda çalışıyor. Pano takip ediliyor.",
+  "DownloadStartedTitle": "İndirme Başladı",
+  "DownloadStartedMsg": "{title} indiriliyor...",
+  "DownloadSuccessTitle": "İndirme Tamamlandı",
+  "DownloadSuccessMsg": "{title} başarıyla indirildi!",
+  "DownloadErrorTitle": "İndirme Hatası",
+  "DownloadErrorMsg": "Hata: {error}",
+  "MenuUpdate": "YT Audio Catcher Güncelle",
+  "MenuExit": "Çıkış",
+  "UpdateTitle": "YT Audio Catcher Güncelleme",
+  "UpdateStartMsg": "Gerekli dosyalar indiriliyor, lütfen bekleyin...",
+  "DownloadLog": "İndiriliyor: {url}",
+  "ExtractFfmpeg": "FFmpeg çıkartılıyor...",
+  "ExtractDeno": "Deno çıkartılıyor...",
+  "UpdateSuccessLog": "Tüm dosyalar başarıyla güncellendi!",
+  "UpdateSuccessMsg": "Güncelleme tamamlandı. Uygulamayı kullanabilirsiniz.",
+  "UpdateErrorLog": "Hata oluştu: {error}",
+  "UpdateErrorTitle": "Güncelleme Hatası"
+}

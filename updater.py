@@ -5,9 +5,10 @@ import zipfile
 import shutil
 import tempfile
 from plyer import notification
+from i18n import tr
 
 def download_file(url, dest):
-    print(f"İndiriliyor: {url}")
+    print(tr("DownloadLog", url=url))
     urllib.request.urlretrieve(url, dest)
 
 def update_binaries():
@@ -18,12 +19,15 @@ def update_binaries():
     temp_dir = tempfile.mkdtemp()
     
     try:
-        notification.notify(
-            title="YT Audio Catcher Güncelleme",
-            message="Gerekli dosyalar indiriliyor, lütfen bekleyin...",
-            app_name="YT Audio Catcher",
-            timeout=3
-        )
+        try:
+            notification.notify(
+                title=tr("UpdateTitle"),
+                message=tr("UpdateStartMsg"),
+                app_name="YT Audio Catcher",
+                timeout=3
+            )
+        except Exception:
+            pass
         
         # 1. yt-dlp.exe
         ytdlp_url = "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe"
@@ -36,11 +40,10 @@ def update_binaries():
         download_file(ffmpeg_url, ffmpeg_zip)
         
         # Extract ffmpeg.exe and ffprobe.exe
-        print("FFmpeg çıkartılıyor...")
+        print(tr("ExtractFfmpeg"))
         with zipfile.ZipFile(ffmpeg_zip, 'r') as zip_ref:
             for file_info in zip_ref.infolist():
                 if file_info.filename.endswith('ffmpeg.exe') or file_info.filename.endswith('ffprobe.exe'):
-                    # zip_ref.extract extracts with full path, we just want to read and write
                     source = zip_ref.open(file_info.filename)
                     target_name = os.path.basename(file_info.filename)
                     target_path = os.path.join(appdata_dir, target_name)
@@ -53,7 +56,7 @@ def update_binaries():
         download_file(deno_url, deno_zip)
         
         # Extract deno.exe
-        print("Deno çıkartılıyor...")
+        print(tr("ExtractDeno"))
         with zipfile.ZipFile(deno_zip, 'r') as zip_ref:
             for file_info in zip_ref.infolist():
                 if file_info.filename.endswith('deno.exe'):
@@ -63,22 +66,28 @@ def update_binaries():
                     with open(target_path, "wb") as target:
                         shutil.copyfileobj(source, target)
                         
-        print("Tüm dosyalar başarıyla güncellendi!")
-        notification.notify(
-            title="YT Audio Catcher Güncelleme",
-            message="Güncelleme tamamlandı. Uygulamayı kullanabilirsiniz.",
-            app_name="YT Audio Catcher",
-            timeout=5
-        )
+        print(tr("UpdateSuccessLog"))
+        try:
+            notification.notify(
+                title=tr("UpdateTitle"),
+                message=tr("UpdateSuccessMsg"),
+                app_name="YT Audio Catcher",
+                timeout=5
+            )
+        except Exception:
+            pass
         
     except Exception as e:
-        print(f"Hata oluştu: {e}")
-        notification.notify(
-            title="Güncelleme Hatası",
-            message=f"Hata: {str(e)}",
-            app_name="YT Audio Catcher",
-            timeout=5
-        )
+        print(tr("UpdateErrorLog", error=str(e)))
+        try:
+            notification.notify(
+                title=tr("UpdateErrorTitle"),
+                message=tr("UpdateErrorMsg", error=str(e)),
+                app_name="YT Audio Catcher",
+                timeout=5
+            )
+        except Exception:
+            pass
     finally:
         # Temizlik
         shutil.rmtree(temp_dir, ignore_errors=True)

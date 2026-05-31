@@ -1,0 +1,23 @@
+{
+  "MissingFilesTitle": "Missing Files",
+  "MissingFilesMsg": "Please click 'YT Audio Catcher Update' shortcut to complete initial setup.",
+  "AppRunningTitle": "YT Audio Catcher",
+  "AppRunningMsg": "Application running in background. Clipboard is being monitored.",
+  "DownloadStartedTitle": "Download Started",
+  "DownloadStartedMsg": "Downloading {title}...",
+  "DownloadSuccessTitle": "Download Complete",
+  "DownloadSuccessMsg": "{title} downloaded successfully!",
+  "DownloadErrorTitle": "Download Error",
+  "DownloadErrorMsg": "Error: {error}",
+  "MenuUpdate": "Update YT Audio Catcher",
+  "MenuExit": "Exit",
+  "UpdateTitle": "YT Audio Catcher Update",
+  "UpdateStartMsg": "Downloading necessary files, please wait...",
+  "DownloadLog": "Downloading: {url}",
+  "ExtractFfmpeg": "Extracting FFmpeg...",
+  "ExtractDeno": "Extracting Deno...",
+  "UpdateSuccessLog": "All files updated successfully!",
+  "UpdateSuccessMsg": "Update complete. You can now use the application.",
+  "UpdateErrorLog": "Error occurred: {error}",
+  "UpdateErrorTitle": "Update Error"
+}

@@ -8,7 +8,9 @@ import shutil
 import pystray
 from PIL import Image, ImageDraw
 import pyperclip
+# pyrefly: ignore [missing-import]
 from plyer import notification
+from i18n import tr
 
 def get_base_dir():
     # If compiled with pyinstaller, use the directory containing the bundled files
@@ -29,12 +31,15 @@ def setup_binaries():
             missing.append(bin_name)
             
     if missing:
-        notification.notify(
-            title="Eksik Dosyalar",
-            message="Lütfen 'YT Audio Catcher Güncelle' kısayoluna tıklayarak ilk kurulumu tamamlayın.",
-            app_name="YT Audio Catcher",
-            timeout=10
-        )
+        try:
+            notification.notify(
+                title=tr("MissingFilesTitle"),
+                message=tr("MissingFilesMsg"),
+                app_name="YT Audio Catcher",
+                timeout=10
+            )
+        except Exception:
+            pass
                 
     return appdata_dir
 
@@ -50,119 +55,126 @@ def create_image():
     dc.rectangle([16, 16, 48, 48], fill=(255, 255, 255))
     return image
 
-def is_youtube_link(url):
-    # Basit bir regex ile YouTube linki kontrolü
-    pattern = r'^(https?\:\/\/)?(www\.youtube\.com|youtu\.be|youtube\.com)\/.+$'
-    return re.match(pattern, url) is not None
-
-class YTAudioCatcher:
+class YtClipboardDownloader:
     def __init__(self):
-        self.last_downloaded_url = ""
-        self.running = True
-        self.base_dir = get_base_dir()
+        self.appdata_dir = setup_binaries()
+        self.yt_dlp_path = os.path.join(self.appdata_dir, 'yt-dlp.exe')
         
-        # Binaries'i kur ve kullanacağımız dizini al
-        self.bin_dir = setup_binaries()
-        
-        # Varsayılan Music/Youtube dizinini bul ve yoksa oluştur
-        self.music_dir = os.path.join(os.path.expanduser("~\\Music"), "Youtube")
+        # Kullanıcının müzik klasörünün altında Youtube klasörü oluştur
+        self.music_dir = os.path.join(os.path.expanduser('~'), 'Music', 'Youtube')
         os.makedirs(self.music_dir, exist_ok=True)
         
-        # yt-dlp ve ffmpeg artık AppData dizininde yer alacak
-        self.ytdlp_path = os.path.join(self.bin_dir, "yt-dlp.exe")
-        self.ffmpeg_path = self.bin_dir
+        self.last_clipboard = ""
+        # YouTube URL'sini yakalamak için basit bir regex
+        self.yt_pattern = re.compile(r'(https?://)?(www\.)?(youtube\.com/watch\?v=|youtu\.be/)[a-zA-Z0-9_-]+')
+        self.running = True
         
     def download_audio(self, url):
         try:
-            output_template = os.path.join(self.music_dir, "%(title)s.%(ext)s")
-            
-            # Belirtilen dizinde yt-dlp.exe varsa onu kullan, yoksa sistemdeki yt-dlp'yi kullanmayı dene
-            exe_to_run = self.ytdlp_path if os.path.exists(self.ytdlp_path) else "yt-dlp"
-            
-            command = [
-                exe_to_run,
-                "-U", # Uygulamayı güncellemeye çalışır (eğer yetkisi varsa)
-                "-S", "codec", 
-                "-f", "ba",
-                "--extract-audio",
-                "--audio-format", "mp3",
-                "--audio-quality", "320K",
-                "--output", output_template,
-                "--ffmpeg-location", self.ffmpeg_path,
+            # Önce videonun adını alalım
+            title_cmd = [
+                self.yt_dlp_path,
+                '--get-title',
+                url
+            ]
+            title_process = subprocess.run(title_cmd, capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
+            title = title_process.stdout.strip()
+            if not title:
+                title = "Video"
+                
+            try:
+                notification.notify(
+                    title=tr("DownloadStartedTitle"),
+                    message=tr("DownloadStartedMsg", title=title),
+                    app_name="YT Audio Catcher",
+                    timeout=3
+                )
+            except Exception:
+                pass
+                
+            # İndirme komutu (ffmpeg yolunu belirterek)
+            download_cmd = [
+                self.yt_dlp_path,
+                '-f', 'ba',
+                '--extract-audio',
+                '--audio-format', 'mp3',
+                '--audio-quality', '320K',
+                '--output', os.path.join(self.music_dir, '%(title)s.%(ext)s'),
+                '--ffmpeg-location', self.appdata_dir,
                 url
             ]
             
-            # Komut satırı (CMD) penceresinin açılmasını engeller
-            creationflags = 0
-            if sys.platform == "win32":
-                creationflags = subprocess.CREATE_NO_WINDOW
-                
-            result = subprocess.run(command, capture_output=True, text=True, creationflags=creationflags)
+            subprocess.run(download_cmd, creationflags=subprocess.CREATE_NO_WINDOW)
             
-            if result.returncode == 0:
-                title = "Şarkı"
-                # yt-dlp çıktısından dosya adını/şarkı adını ayrıştırmaya çalış
-                match = re.search(r'\[ExtractAudio\] Destination:\s*(.+)\.mp3', result.stdout)
-                if match:
-                    title = os.path.basename(match.group(1))
+            try:
+                notification.notify(
+                    title=tr("DownloadSuccessTitle"),
+                    message=tr("DownloadSuccessMsg", title=title),
+                    app_name="YT Audio Catcher",
+                    timeout=5
+                )
+            except Exception:
+                pass
                 
-                notification.notify(
-                    title="İndirme Tamamlandı",
-                    message=f"{title} indirildi.",
-                    app_name="YT Audio Catcher",
-                    timeout=5
-                )
-            else:
-                notification.notify(
-                    title="İndirme Hatası",
-                    message="İndirme başarısız oldu, hata detayları için loglara bakınız.",
-                    app_name="YT Audio Catcher",
-                    timeout=5
-                )
-                print(f"Hata detayı: {result.stderr}")
         except Exception as e:
-            notification.notify(
-                title="Uygulama Hatası",
-                message=f"Beklenmeyen bir hata oluştu: {str(e)}",
-                app_name="YT Audio Catcher",
-                timeout=5
-            )
-
+            try:
+                notification.notify(
+                    title=tr("DownloadErrorTitle"),
+                    message=tr("DownloadErrorMsg", error=str(e)),
+                    app_name="YT Audio Catcher",
+                    timeout=5
+                )
+            except Exception:
+                pass
+            
     def monitor_clipboard(self):
+        try:
+            notification.notify(
+                title=tr("AppRunningTitle"),
+                message=tr("AppRunningMsg"),
+                app_name="YT Audio Catcher",
+                timeout=3
+            )
+        except Exception:
+            pass
+            
         while self.running:
             try:
-                # pyperclip.paste() panodaki metni döndürür
-                current_clipboard = pyperclip.paste().strip()
-                # Eğer daha önce indirdiğimiz link değilse ve youtube linki ise
-                if current_clipboard != self.last_downloaded_url and is_youtube_link(current_clipboard):
-                    self.last_downloaded_url = current_clipboard
+                current_clipboard = pyperclip.paste()
+                if current_clipboard != self.last_clipboard:
+                    self.last_clipboard = current_clipboard
                     
-                    notification.notify(
-                        title="İndirme Başladı",
-                        message="YouTube linki algılandı, mp3 indiriliyor...",
-                        app_name="YT Audio Catcher",
-                        timeout=3
-                    )
-                    
-                    # Ana thread'i (pano kontrolünü) bloklamamak için farklı thread'de indir
-                    dl_thread = threading.Thread(target=self.download_audio, args=(current_clipboard,))
-                    dl_thread.start()
+                    if self.yt_pattern.match(current_clipboard):
+                        # İndirme işlemini ayrı bir thread'de başlat
+                        threading.Thread(target=self.download_audio, args=(current_clipboard,), daemon=True).start()
+                        
             except Exception:
                 pass
             time.sleep(1)
-
+            
     def stop(self, icon, item):
         self.running = False
         icon.stop()
-
-    def run(self):
-        monitor_thread = threading.Thread(target=self.monitor_clipboard, daemon=True)
-        monitor_thread.start()
         
-        menu = pystray.Menu(pystray.MenuItem('Çıkış', self.stop))
-        icon = pystray.Icon("YT Audio Catcher", create_image(), "YouTube Downloader", menu)
-        icon.run()
+    def update_app(self, icon, item):
+        updater_path = os.path.join(get_base_dir(), 'updater.exe')
+        if os.path.exists(updater_path):
+            subprocess.Popen([updater_path])
+
+def main():
+    app = YtClipboardDownloader()
+    
+    # Arka plan okuyucu thread'i
+    monitor_thread = threading.Thread(target=app.monitor_clipboard, daemon=True)
+    monitor_thread.start()
+    
+    # Sistem tepsisi (System Tray) simgesi
+    menu = pystray.Menu(
+        pystray.MenuItem(tr("MenuUpdate"), app.update_app),
+        pystray.MenuItem(tr("MenuExit"), app.stop)
+    )
+    icon = pystray.Icon("YT Audio Catcher", create_image(), "YT Audio Catcher", menu)
+    icon.run()
 
 if __name__ == '__main__':
-    app = YTAudioCatcher()
-    app.run()
+    main()
