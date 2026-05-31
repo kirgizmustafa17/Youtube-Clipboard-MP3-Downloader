@@ -19,5 +19,9 @@
   "UpdateSuccessLog": "All files updated successfully!",
   "UpdateSuccessMsg": "Update complete. You can now use the application.",
   "UpdateErrorLog": "Error occurred: {error}",
-  "UpdateErrorTitle": "Update Error"
+  "UpdateErrorTitle": "Update Error",
+  "DownloadingLabel": "Downloading: {name} ({percent}%)",
+  "ExtractingLabel": "Extracting: {name}...",
+  "UpdateCompleteLabel": "Update complete! You may close this window.",
+  "UpdateErrorLabel": "Error: {error}"
 }

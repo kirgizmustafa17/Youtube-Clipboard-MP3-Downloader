@@ -19,5 +19,9 @@
   "UpdateSuccessLog": "Tüm dosyalar başarıyla güncellendi!",
   "UpdateSuccessMsg": "Güncelleme tamamlandı. Uygulamayı kullanabilirsiniz.",
   "UpdateErrorLog": "Hata oluştu: {error}",
-  "UpdateErrorTitle": "Güncelleme Hatası"
+  "UpdateErrorTitle": "Güncelleme Hatası",
+  "DownloadingLabel": "İndiriliyor: {name} (%{percent})",
+  "ExtractingLabel": "Çıkartılıyor: {name}...",
+  "UpdateCompleteLabel": "Güncelleme tamamlandı! Bu pencereyi kapatabilirsiniz.",
+  "UpdateErrorLabel": "Hata: {error}"
 }
