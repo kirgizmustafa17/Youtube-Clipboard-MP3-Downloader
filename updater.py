@@ -11,7 +11,7 @@ def download_file(url, dest):
     urllib.request.urlretrieve(url, dest)
 
 def update_binaries():
-    appdata_dir = os.path.join(os.getenv('APPDATA'), 'YtClipboardDownloader', 'bin')
+    appdata_dir = os.path.join(os.getenv('APPDATA'), 'YTAudioCatcher', 'bin')
     os.makedirs(appdata_dir, exist_ok=True)
     
     # Geçici klasör oluştur
@@ -19,9 +19,9 @@ def update_binaries():
     
     try:
         notification.notify(
-            title="YtDownloader Güncelleme",
+            title="YT Audio Catcher Güncelleme",
             message="Gerekli dosyalar indiriliyor, lütfen bekleyin...",
-            app_name="YtDownloader",
+            app_name="YT Audio Catcher",
             timeout=3
         )
         
@@ -65,9 +65,9 @@ def update_binaries():
                         
         print("Tüm dosyalar başarıyla güncellendi!")
         notification.notify(
-            title="YtDownloader Güncelleme",
+            title="YT Audio Catcher Güncelleme",
             message="Güncelleme tamamlandı. Uygulamayı kullanabilirsiniz.",
-            app_name="YtDownloader",
+            app_name="YT Audio Catcher",
             timeout=5
         )
         
@@ -76,7 +76,7 @@ def update_binaries():
         notification.notify(
             title="Güncelleme Hatası",
             message=f"Hata: {str(e)}",
-            app_name="YtDownloader",
+            app_name="YT Audio Catcher",
             timeout=5
         )
     finally:

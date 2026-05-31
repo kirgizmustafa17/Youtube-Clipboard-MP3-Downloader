@@ -19,7 +19,7 @@ def get_base_dir():
 
 def setup_binaries():
     # Sadece klasörün varlığını kontrol eder, indirmeler updater.exe ile yapılacak.
-    appdata_dir = os.path.join(os.getenv('APPDATA'), 'YtClipboardDownloader', 'bin')
+    appdata_dir = os.path.join(os.getenv('APPDATA'), 'YTAudioCatcher', 'bin')
     os.makedirs(appdata_dir, exist_ok=True)
     
     binaries = ['yt-dlp.exe', 'ffmpeg.exe', 'ffprobe.exe', 'deno.exe']
@@ -31,8 +31,8 @@ def setup_binaries():
     if missing:
         notification.notify(
             title="Eksik Dosyalar",
-            message="Lütfen 'YtDownloader Güncelle' kısayoluna tıklayarak ilk kurulumu tamamlayın.",
-            app_name="YtDownloader",
+            message="Lütfen 'YT Audio Catcher Güncelle' kısayoluna tıklayarak ilk kurulumu tamamlayın.",
+            app_name="YT Audio Catcher",
             timeout=10
         )
                 
@@ -55,7 +55,7 @@ def is_youtube_link(url):
     pattern = r'^(https?\:\/\/)?(www\.youtube\.com|youtu\.be|youtube\.com)\/.+$'
     return re.match(pattern, url) is not None
 
-class YtClipboardDownloader:
+class YTAudioCatcher:
     def __init__(self):
         self.last_downloaded_url = ""
         self.running = True
@@ -109,14 +109,14 @@ class YtClipboardDownloader:
                 notification.notify(
                     title="İndirme Tamamlandı",
                     message=f"{title} indirildi.",
-                    app_name="YtDownloader",
+                    app_name="YT Audio Catcher",
                     timeout=5
                 )
             else:
                 notification.notify(
                     title="İndirme Hatası",
                     message="İndirme başarısız oldu, hata detayları için loglara bakınız.",
-                    app_name="YtDownloader",
+                    app_name="YT Audio Catcher",
                     timeout=5
                 )
                 print(f"Hata detayı: {result.stderr}")
@@ -124,7 +124,7 @@ class YtClipboardDownloader:
             notification.notify(
                 title="Uygulama Hatası",
                 message=f"Beklenmeyen bir hata oluştu: {str(e)}",
-                app_name="YtDownloader",
+                app_name="YT Audio Catcher",
                 timeout=5
             )
 
@@ -140,7 +140,7 @@ class YtClipboardDownloader:
                     notification.notify(
                         title="İndirme Başladı",
                         message="YouTube linki algılandı, mp3 indiriliyor...",
-                        app_name="YtDownloader",
+                        app_name="YT Audio Catcher",
                         timeout=3
                     )
                     
@@ -160,9 +160,9 @@ class YtClipboardDownloader:
         monitor_thread.start()
         
         menu = pystray.Menu(pystray.MenuItem('Çıkış', self.stop))
-        icon = pystray.Icon("YtDownloader", create_image(), "YouTube Downloader", menu)
+        icon = pystray.Icon("YT Audio Catcher", create_image(), "YouTube Downloader", menu)
         icon.run()
 
 if __name__ == '__main__':
-    app = YtClipboardDownloader()
+    app = YTAudioCatcher()
     app.run()

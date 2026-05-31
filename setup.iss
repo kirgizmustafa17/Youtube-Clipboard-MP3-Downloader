@@ -1,24 +1,24 @@
 [Setup]
-AppName=YtDownloader
+AppName=YT Audio Catcher
 AppVersion=1.0
-DefaultDirName={userappdata}\YtClipboardDownloader
-DefaultGroupName=YtDownloader
+DefaultDirName={userappdata}\YTAudioCatcher
+DefaultGroupName=YT Audio Catcher
 OutputDir=.\dist
-OutputBaseFilename=YtDownloader_Setup
+OutputBaseFilename=YTAudioCatcher_Setup
 Compression=lzma
 SolidCompression=yes
 PrivilegesRequired=lowest
 SetupIconFile=icon.ico
 
 [Files]
-Source: "dist\YtDownloader.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\YTAudioCatcher.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "dist\updater.exe"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
-Name: "{group}\YtDownloader"; Filename: "{app}\YtDownloader.exe"
-Name: "{group}\YtDownloader Güncelle"; Filename: "{app}\updater.exe"
-Name: "{userdesktop}\YtDownloader"; Filename: "{app}\YtDownloader.exe"; Tasks: desktopicon
-Name: "{userdesktop}\YtDownloader Güncelle"; Filename: "{app}\updater.exe"; Tasks: desktopicon
+Name: "{group}\YT Audio Catcher"; Filename: "{app}\YTAudioCatcher.exe"
+Name: "{group}\YT Audio Catcher Güncelle"; Filename: "{app}\updater.exe"
+Name: "{userdesktop}\YT Audio Catcher"; Filename: "{app}\YTAudioCatcher.exe"; Tasks: desktopicon
+Name: "{userdesktop}\YT Audio Catcher Güncelle"; Filename: "{app}\updater.exe"; Tasks: desktopicon
 
 [Tasks]
 Name: "desktopicon"; Description: "Masaüstü kısayollarını oluştur"; GroupDescription: "Ek Kısayollar:"
