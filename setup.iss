@@ -1,6 +1,6 @@
 [Setup]
 AppName=YT Audio Catcher
-AppVersion=1.0
+AppVersion=1.1.0
 DefaultDirName={userappdata}\YTAudioCatcher
 DefaultGroupName=YT Audio Catcher
 OutputDir=.\dist
