@@ -26,6 +26,7 @@ Write-Host "`n[2/2] Setup dosyasi (Inno Setup) derleniyor..."
 
 # Inno Setup Compiler'in (ISCC.exe) olasi yollari
 $iscc_paths = @(
+    "C:\Users\mustafa\AppData\Local\Programs\Antigravity IDE\resources\app\node_modules\innosetup\bin\ISCC.exe",
     "C:\Program Files (x86)\Inno Setup 6\ISCC.exe",
     "C:\Program Files\Inno Setup 6\ISCC.exe",
     "C:\Program Files (x86)\Inno Setup 5\ISCC.exe",
