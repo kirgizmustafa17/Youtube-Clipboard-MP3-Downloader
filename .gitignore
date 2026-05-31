@@ -5,3 +5,9 @@ __pycache__/
 *.spec
 *.exe
 *.zip
+
+# Build, release and setup scripts
+build.ps1
+release.ps1
+rename.py
+setup.iss
