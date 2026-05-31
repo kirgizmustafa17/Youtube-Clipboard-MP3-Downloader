@@ -25,5 +25,5 @@
   "UpdateCompleteLabel": "Update complete! You may close this window.",
   "UpdateErrorLabel": "Error: {error}",
   "PlaylistFoundTitle": "Playlist Detected",
-  "PlaylistFoundMsg": "This link contains a playlist with {count} videos.\n\nClick YES to download the ENTIRE PLAYLIST.\nClick NO to download ONLY THIS VIDEO.\nClick CANCEL to abort."
+  "PlaylistFoundMsg": "This link contains a playlist with {count} tracks.\n\nClick YES to download the ENTIRE PLAYLIST.\nClick NO to download ONLY THIS TRACK.\nClick CANCEL to abort."
 }
