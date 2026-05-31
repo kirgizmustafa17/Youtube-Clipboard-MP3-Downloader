@@ -23,5 +23,7 @@
   "DownloadingLabel": "İndiriliyor: {name} (%{percent})",
   "ExtractingLabel": "Çıkartılıyor: {name}...",
   "UpdateCompleteLabel": "Güncelleme tamamlandı! Bu pencereyi kapatabilirsiniz.",
-  "UpdateErrorLabel": "Hata: {error}"
+  "UpdateErrorLabel": "Hata: {error}",
+  "PlaylistFoundTitle": "Çalma Listesi (Playlist) Bulundu",
+  "PlaylistFoundMsg": "Bu bağlantıda {count} adet videodan oluşan bir çalma listesi var.\n\nTÜM LİSTEYİ indirmek için EVET'e tıklayın.\nSADECE BU VİDEOYU indirmek için HAYIR'a tıklayın.\nİşlemi iptal etmek için İPTAL'e tıklayın."
 }

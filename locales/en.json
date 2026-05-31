@@ -23,5 +23,7 @@
   "DownloadingLabel": "Downloading: {name} ({percent}%)",
   "ExtractingLabel": "Extracting: {name}...",
   "UpdateCompleteLabel": "Update complete! You may close this window.",
-  "UpdateErrorLabel": "Error: {error}"
+  "UpdateErrorLabel": "Error: {error}",
+  "PlaylistFoundTitle": "Playlist Detected",
+  "PlaylistFoundMsg": "This link contains a playlist with {count} videos.\n\nClick YES to download the ENTIRE PLAYLIST.\nClick NO to download ONLY THIS VIDEO.\nClick CANCEL to abort."
 }

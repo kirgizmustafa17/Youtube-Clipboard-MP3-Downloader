@@ -8,6 +8,8 @@ import shutil
 import pystray
 from PIL import Image, ImageDraw
 import pyperclip
+import tkinter as tk
+from tkinter import messagebox
 # pyrefly: ignore [missing-import]
 from plyer import notification
 from i18n import tr
@@ -65,22 +67,25 @@ class YtClipboardDownloader:
         os.makedirs(self.music_dir, exist_ok=True)
         
         self.last_clipboard = ""
-        # YouTube URL'sini yakalamak için basit bir regex
-        self.yt_pattern = re.compile(r'(https?://)?(www\.)?(youtube\.com/watch\?v=|youtu\.be/)[a-zA-Z0-9_-]+')
+        # YouTube URL'sini yakalamak için regex
+        self.yt_pattern = re.compile(r'(https?://)?(www\.)?(youtube\.com/watch\?v=|youtube\.com/playlist\?list=|youtu\.be/)[a-zA-Z0-9_-]+')
         self.running = True
         
-    def download_audio(self, url):
+    def download_audio(self, url, is_playlist=False):
         try:
-            # Önce videonun adını alalım
-            title_cmd = [
-                self.yt_dlp_path,
-                '--get-title',
-                url
-            ]
-            title_process = subprocess.run(title_cmd, capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
-            title = title_process.stdout.strip()
-            if not title:
-                title = "Video"
+            if is_playlist:
+                title = "Playlist"
+            else:
+                title_cmd = [
+                    self.yt_dlp_path,
+                    '--get-title',
+                    '--no-playlist',
+                    url
+                ]
+                title_process = subprocess.run(title_cmd, capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
+                title = title_process.stdout.strip()
+                if not title:
+                    title = "Video"
                 
             try:
                 notification.notify(
@@ -95,6 +100,7 @@ class YtClipboardDownloader:
             # İndirme komutu (ffmpeg yolunu belirterek)
             download_cmd = [
                 self.yt_dlp_path,
+                '--yes-playlist' if is_playlist else '--no-playlist',
                 '-f', 'ba',
                 '--extract-audio',
                 '--audio-format', 'mp3',
@@ -145,8 +151,33 @@ class YtClipboardDownloader:
                     self.last_clipboard = current_clipboard
                     
                     if self.yt_pattern.match(current_clipboard):
-                        # İndirme işlemini ayrı bir thread'de başlat
-                        threading.Thread(target=self.download_audio, args=(current_clipboard,), daemon=True).start()
+                        is_playlist = "list=" in current_clipboard and "start_radio=" not in current_clipboard
+                        
+                        if is_playlist:
+                            def prompt_playlist(target_url):
+                                count_cmd = [self.yt_dlp_path, '--flat-playlist', '--print', 'playlist_count', target_url]
+                                try:
+                                    res = subprocess.run(count_cmd, capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
+                                    lines = res.stdout.strip().split('\n')
+                                    count = lines[0] if lines and lines[0] else "?"
+                                except Exception:
+                                    count = "?"
+                                
+                                root = tk.Tk()
+                                root.withdraw()
+                                root.attributes('-topmost', True)
+                                ans = messagebox.askyesnocancel(tr("PlaylistFoundTitle"), tr("PlaylistFoundMsg", count=count), parent=root)
+                                root.destroy()
+                                
+                                if ans is True:
+                                    self.download_audio(target_url, is_playlist=True)
+                                elif ans is False:
+                                    self.download_audio(target_url, is_playlist=False)
+                                
+                            threading.Thread(target=prompt_playlist, args=(current_clipboard,), daemon=True).start()
+                        else:
+                            # İndirme işlemini ayrı bir thread'de başlat
+                            threading.Thread(target=self.download_audio, args=(current_clipboard, False), daemon=True).start()
                         
             except Exception:
                 pass
